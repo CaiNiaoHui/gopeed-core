@@ -12,12 +12,16 @@ import (
 const progressWidth = 20
 
 func main() {
+	// args为接受的结构体，包含url, 并发数，路径
 	args := parse()
 
 	var wg sync.WaitGroup
 	err := download.Boot().
 		URL(args.url).
-		Listener(func(event *download.Event) {
+		Listener(
+			// listener是一个事件函数
+			func(event *download.Event) {
+			// 如果事件的key为progress
 			if event.Key == download.EventKeyProgress {
 				printProgress(event.Task, "downloading...")
 			}
@@ -37,7 +41,7 @@ func main() {
 				}
 				wg.Done()
 			}
-		}).
+			}).
 		Create(&base.Options{
 			Path:        *args.dir,
 			Connections: *args.connections,
@@ -49,6 +53,7 @@ func main() {
 	wg.Wait()
 }
 
+// 打印下载状态
 func printProgress(task *download.TaskInfo, title string) {
 	rate := float64(task.Progress.Downloaded) / float64(task.Res.TotalSize)
 	completeWidth := int(progressWidth * rate)

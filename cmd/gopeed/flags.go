@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 )
 
+// url下载地址 connections并发数 dir存放路径
 type args struct {
 	url         string
 	connections *int
@@ -14,6 +15,7 @@ type args struct {
 }
 
 func parse() *args {
+	// 返回路径dir
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
 		panic(err)
@@ -22,8 +24,12 @@ func parse() *args {
 	args.connections = flag.Int("C", 16, "Concurrent connections.")
 	args.dir = flag.String("D", dir, "Save directory.")
 	flag.Parse()
+	// t为接受的命令行参数
 	t := flag.Args()
+
+	// t的命令行参数个数大于0
 	if len(t) > 0 {
+		// 把第一个参数存储在url
 		args.url = t[0]
 	} else {
 		gPrintln("missing url parameter")
